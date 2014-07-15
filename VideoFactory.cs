@@ -18,7 +18,7 @@ namespace LiveSplit.UI.Components
 
         public string Description
         {
-            get { return ""; }
+            get { return "Shows a PB or WR video that is synced up to the current run time."; }
         }
 
         public ComponentCategory Category
