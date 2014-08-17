@@ -31,11 +31,13 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.btnSelectFile = new System.Windows.Forms.Button();
-            this.txtMRL = new System.Windows.Forms.TextBox();
-            this.chkPerSegment = new System.Windows.Forms.CheckBox();
+            this.txtVideoPath = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txtOffset = new System.Windows.Forms.TextBox();
+            this.trkHeightWidth = new System.Windows.Forms.TrackBar();
+            this.lblHeightWidth = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkHeightWidth)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -46,19 +48,20 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 81F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnSelectFile, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.txtMRL, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.chkPerSegment, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.txtVideoPath, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtOffset, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.trkHeightWidth, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.lblHeightWidth, 0, 2);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(7, 7);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(462, 136);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(462, 88);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -69,7 +72,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Video MRL:";
+            this.label1.Text = "Video Path:";
             // 
             // btnSelectFile
             // 
@@ -78,29 +81,17 @@
             this.btnSelectFile.Name = "btnSelectFile";
             this.btnSelectFile.Size = new System.Drawing.Size(75, 23);
             this.btnSelectFile.TabIndex = 1;
-            this.btnSelectFile.Text = "Select...";
+            this.btnSelectFile.Text = "Browse...";
             this.btnSelectFile.UseVisualStyleBackColor = true;
+            this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
             // 
-            // txtMRL
+            // txtVideoPath
             // 
-            this.txtMRL.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMRL.Location = new System.Drawing.Point(85, 4);
-            this.txtMRL.Name = "txtMRL";
-            this.txtMRL.Size = new System.Drawing.Size(293, 20);
-            this.txtMRL.TabIndex = 2;
-            // 
-            // chkPerSegment
-            // 
-            this.chkPerSegment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.chkPerSegment.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.chkPerSegment, 2);
-            this.chkPerSegment.Location = new System.Drawing.Point(7, 64);
-            this.chkPerSegment.Margin = new System.Windows.Forms.Padding(7, 3, 3, 3);
-            this.chkPerSegment.Name = "chkPerSegment";
-            this.chkPerSegment.Size = new System.Drawing.Size(371, 17);
-            this.chkPerSegment.TabIndex = 3;
-            this.chkPerSegment.Text = "Per Segment Video";
-            this.chkPerSegment.UseVisualStyleBackColor = true;
+            this.txtVideoPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtVideoPath.Location = new System.Drawing.Point(85, 4);
+            this.txtVideoPath.Name = "txtVideoPath";
+            this.txtVideoPath.Size = new System.Drawing.Size(293, 20);
+            this.txtVideoPath.TabIndex = 2;
             // 
             // label2
             // 
@@ -122,6 +113,26 @@
             this.txtOffset.TabIndex = 5;
             this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // trkHeightWidth
+            // 
+            this.trkHeightWidth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.SetColumnSpan(this.trkHeightWidth, 2);
+            this.trkHeightWidth.Location = new System.Drawing.Point(85, 61);
+            this.trkHeightWidth.Name = "trkHeightWidth";
+            this.trkHeightWidth.Size = new System.Drawing.Size(374, 24);
+            this.trkHeightWidth.TabIndex = 6;
+            this.trkHeightWidth.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // lblHeightWidth
+            // 
+            this.lblHeightWidth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblHeightWidth.AutoSize = true;
+            this.lblHeightWidth.Location = new System.Drawing.Point(3, 66);
+            this.lblHeightWidth.Name = "lblHeightWidth";
+            this.lblHeightWidth.Size = new System.Drawing.Size(76, 13);
+            this.lblHeightWidth.TabIndex = 7;
+            this.lblHeightWidth.Text = "Height:";
+            // 
             // VideoSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,9 +140,11 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "VideoSettings";
             this.Padding = new System.Windows.Forms.Padding(7);
-            this.Size = new System.Drawing.Size(476, 150);
+            this.Size = new System.Drawing.Size(476, 102);
+            this.Load += new System.EventHandler(this.VideoSettings_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trkHeightWidth)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -141,9 +154,10 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSelectFile;
-        private System.Windows.Forms.CheckBox chkPerSegment;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtOffset;
-        public System.Windows.Forms.TextBox txtMRL;
+        public System.Windows.Forms.TextBox txtVideoPath;
+        private System.Windows.Forms.TrackBar trkHeightWidth;
+        private System.Windows.Forms.Label lblHeightWidth;
     }
 }

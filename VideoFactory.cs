@@ -28,7 +28,7 @@ namespace LiveSplit.UI.Components
 
         public IComponent Create(LiveSplitState state)
         {
-            return new VideoComponent();
+            return new VideoComponent(state);
         }
 
         public string UpdateName
@@ -56,7 +56,7 @@ namespace LiveSplit.UI.Components
 
         public Version Version
         {
-            get { return Version.Parse("1.0"); }
+            get { return Version.Parse("1.0.1"); }
         }
     }
 }

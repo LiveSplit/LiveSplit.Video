@@ -1,179 +1,73 @@
 ﻿using AxAXVLC;
 using LiveSplit.Model;
-using LiveSplit.UI;
 using LiveSplit.UI.Components;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace LiveSplit.Video
 {
-    public class VideoComponent : IComponent
+    public class VideoComponent : ControlComponent
     {
-        #region Properties
-
         public VideoSettings Settings { get; set; }
+        public LiveSplitState State { get; set; }
+        public System.Timers.Timer SynchronizeTimer { get; set; }
 
-        public string ComponentName
+        protected String OldMRL { get; set; }
+
+        public override string ComponentName
         {
             get { return "Video"; }
         }
 
-        public float HorizontalWidth
+        public override float HorizontalWidth
         {
-            get { return 100; }
+            get { return Settings.Width; }
         }
 
-        public float MinimumHeight
-        {
-            get { return 10; }
-        }
-
-        public float VerticalHeight
-        {
-            get { return 200; }
-        }
-
-        public float MinimumWidth
+        public override float MinimumHeight
         {
             get { return 10; }
         }
 
-        public float PaddingTop
+        public override float VerticalHeight
         {
-            get { return 0; }
+            get { return Settings.Height; }
         }
 
-        public float PaddingBottom
+        public override float MinimumWidth
         {
-            get { return 0; }
+            get { return 10; }
         }
 
-        public float PaddingLeft
-        {
-            get { return 0; }
-        }
-
-        public float PaddingRight
-        {
-            get { return 0; }
-        }
-
-        public IDictionary<string, Action> ContextMenuControls { get; set; }
-
-        public Control Form { get; set; }
         public AxVLCPlugin2 VLC { get; set; }
-        public LiveSplitState State { get; set; }
-        public System.Timers.Timer SynchronizeTimer { get; set; }
+        public bool Initialized { get; set; }
 
-        #endregion
+        public VideoComponent(LiveSplitState state) 
+            : this(state, CreateVLCControl())
+        {
+        }
 
-        #region Constructors
-
-        public VideoComponent()
+        public VideoComponent(LiveSplitState state, AxVLCPlugin2 vlc)
+            : base(state, vlc, ex => ErrorCallback(state.Form, ex))
         {
             Settings = new VideoSettings();
-            Settings.txtMRL.TextChanged += txtMRL_TextChanged;
-            ContextMenuControls = new Dictionary<String, Action>();
+            Settings.txtVideoPath.TextChanged += txtMRL_TextChanged;
+            State = state;
+            VLC = vlc;
+            //Control.Visible = false;
+
+            state.OnReset += state_OnReset;
+            state.OnStart += state_OnStart;
+            state.OnPause += state_OnPause;
+            state.OnResume += state_OnResume;
         }
 
-        #endregion
-
-        #region Event Handlers
-
-        void txtMRL_TextChanged(object sender, EventArgs e)
+        static void ErrorCallback(Form form, Exception ex)
         {
-            if (VLC != null && !String.IsNullOrEmpty(Settings.txtMRL.Text))
-            {
-                lock (VLC)
-                {
-                    VLC.playlist.items.clear();
-                    VLC.playlist.add(Settings.txtMRL.Text);
-                }
-            }
-        }
-
-        #endregion
-
-        #region Methods
-
-        public void InvokeIfNeeded(Action x)
-        {
-            if (Form != null && Form.InvokeRequired)
-                Form.Invoke(x);
-            else
-                x();
-        }
-
-        public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
-        {
-            if (Form == null)
-            {
-                if (invalidator != null)
-                    invalidator.Invalidate(0, 0, width, height);
-            }
-            if (VLC != null)
-            {
-                InvokeIfNeeded(() =>
-                {
-                    lock (VLC)
-                    {
-                        VLC.audio.mute = true;
-                        VLC.Volume = 5;
-                    }
-                });
-            }
-        }
-
-        protected void DrawGeneral(Graphics g, LiveSplitState state, float width, float height)
-        {
-            if (Form == null)
-            {
-                State = state;
-                Form = Application.OpenForms.OfType<LiveSplit.View.TimerForm>().First(x => x.Layout.Components.Contains(this));
-
-                System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-                VLC = new AxAXVLC.AxVLCPlugin2();
-                InvokeIfNeeded(() =>
-                {
-                    lock (VLC)
-                    {
-                        ((System.ComponentModel.ISupportInitialize)(VLC)).BeginInit();
-                        Form.SuspendLayout();
-
-                        VLC.Enabled = true;
-                        VLC.Name = "vlc";
-                        VLC.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVLCPlugin21.OcxState")));
-
-                        Form.Controls.Add(VLC);
-
-                        ((System.ComponentModel.ISupportInitialize)(VLC)).EndInit();
-                        Form.ResumeLayout(false);
-
-                        if (!String.IsNullOrEmpty(Settings.MRL))
-                        {
-                            VLC.playlist.items.clear();
-                            VLC.playlist.add(Settings.MRL);
-                        }
-                    }
-                });
-
-                state.OnReset += state_OnReset;
-                state.OnStart += state_OnStart;
-                state.OnSplit += state_OnSplit;
-                state.OnUndoSplit += state_OnUndoSplit;
-                state.OnSkipSplit += state_OnSkipSplit;
-                state.OnPause += state_OnPause;
-                state.OnResume += state_OnResume;
-            }
-            Reposition(width, height, g);
+            MessageBox.Show(form, "The newest 32-bit version of the VLC Media Player along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         void state_OnResume(object sender, EventArgs e)
@@ -185,7 +79,6 @@ namespace LiveSplit.Video
                     VLC.playlist.play();
                 }
             });
-            SynchronizeWithSplit();
         }
 
         void state_OnPause(object sender, EventArgs e)
@@ -199,21 +92,6 @@ namespace LiveSplit.Video
             });
         }
 
-        void state_OnSkipSplit(object sender, EventArgs e)
-        {
-            SynchronizeWithSplit();
-        }
-
-        void state_OnUndoSplit(object sender, EventArgs e)
-        {
-            SynchronizeWithSplit();
-        }
-
-        void state_OnSplit(object sender, EventArgs e)
-        {
-            SynchronizeWithSplit();
-        }
-
         void state_OnStart(object sender, EventArgs e)
         {
             InvokeIfNeeded(() =>
@@ -221,33 +99,11 @@ namespace LiveSplit.Video
                 lock (VLC)
                 {
                     VLC.playlist.play();
+                    if (activated)
+                        Control.Visible = true;
                 }
             });
             Synchronize();
-        }
-
-        void state_OnReset(object sender, EventArgs e)
-        {
-            InvokeIfNeeded(() =>
-            {
-                lock (VLC)
-                {
-                    VLC.playlist.stop();
-                }
-            });
-        }
-
-        public void SynchronizeWithSplit()
-        {
-            if (Settings.PerSegmentVideo)
-            {
-                var time =
-                    State.CurrentSplitIndex - 1 >= 0
-                    ? State.Run[State.CurrentSplitIndex - 1].PersonalBestSplitTime[State.CurrentTimingMethod]
-                    : State.CurrentTime[State.CurrentTimingMethod].Value;
-                if (time.HasValue)
-                    Synchronize(time.Value - State.CurrentTime[State.CurrentTimingMethod].Value);
-            }
         }
 
         public void Synchronize()
@@ -272,11 +128,11 @@ namespace LiveSplit.Video
                 {
                     lock (VLC)
                     {
-                        System.Diagnostics.Debug.WriteLine("Synchronizing: " + (VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds) + " State: " + VLC.input.state);
+                        //System.Diagnostics.Debug.WriteLine("Synchronizing: " + (VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds) + " State: " + VLC.input.state);
                         if (VLC.input.state == 3)
                         {
                             var delta = VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds;
-                            if (Math.Abs(delta) > 160)
+                            if (Math.Abs(delta) > 500)
                                 VLC.input.Time = (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
                             else
                                 SynchronizeTimer.Enabled = false;
@@ -292,74 +148,109 @@ namespace LiveSplit.Video
             SynchronizeTimer.Enabled = true;
         }
 
-
-        public void Reposition(float width, float height, Graphics g)
+        void state_OnReset(object sender, TimerPhase e)
         {
-            var points = new PointF[]
-            {
-                new PointF(0, 0),
-                new PointF(width, height)
-            };
-            g.Transform.TransformPoints(points);
-
             InvokeIfNeeded(() =>
             {
                 lock (VLC)
                 {
-                    VLC.Location = new System.Drawing.Point((int)(points[0].X + 0.5f) + 1, (int)(points[0].Y + 0.5f) + 1);
-                    VLC.Size = new System.Drawing.Size((int)(points[1].X - points[0].X + 0.5f) - 2, (int)(points[1].Y - points[0].Y + 0.5f) - 2);
+                    VLC.playlist.stop();
+                    if (activated)
+                        Control.Visible = false;
                 }
             });
         }
 
-        public void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
+        private static AxVLCPlugin2 CreateVLCControl()
         {
-            DrawGeneral(g, state, HorizontalWidth, height);
+            var vlc = new AxAXVLC.AxVLCPlugin2();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            ((System.ComponentModel.ISupportInitialize)(vlc)).BeginInit();
+            vlc.Enabled = true;
+            vlc.Name = "vlc";
+            vlc.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVLCPlugin21.OcxState")));
+            ((System.ComponentModel.ISupportInitialize)(vlc)).EndInit();
+
+            return vlc;
         }
 
-        public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
+        void txtMRL_TextChanged(object sender, EventArgs e)
         {
-            DrawGeneral(g, state, width, VerticalHeight);
+            if (VLC != null && !String.IsNullOrEmpty(Settings.txtVideoPath.Text))
+            {
+                lock (VLC)
+                {
+                    VLC.playlist.items.clear();
+                    VLC.playlist.add(Settings.txtVideoPath.Text);
+                }
+            }
         }
 
-        public Control GetSettingsControl(LayoutMode mode)
+        public override System.Windows.Forms.Control GetSettingsControl(UI.LayoutMode mode)
         {
+            Settings.Mode = mode;
             return Settings;
         }
 
-        public XmlNode GetSettings(XmlDocument document)
+        public override System.Xml.XmlNode GetSettings(System.Xml.XmlDocument document)
         {
             return Settings.GetSettings(document);
         }
 
-        public void SetSettings(XmlNode settings)
+        public override void SetSettings(System.Xml.XmlNode settings)
         {
-            var oldMRL = Settings.MRL;
             Settings.SetSettings(settings);
-            if (VLC != null && oldMRL != Settings.MRL && !String.IsNullOrEmpty(Settings.MRL))
+
+        }
+
+        public override void Update(UI.IInvalidator invalidator, Model.LiveSplitState state, float width, float height, UI.LayoutMode mode)
+        {
+            base.Update(invalidator, state, width, height, mode);
+
+            if (!Initialized)
             {
-                InvokeIfNeeded(() =>
+                Control.Visible = !Control.Created;
+                Initialized = Control.Created;
+            }
+            else
+            {
+                if (VLC != null && OldMRL != Settings.MRL && !String.IsNullOrEmpty(Settings.MRL))
                 {
-                    lock (VLC)
+                    InvokeIfNeeded(() =>
                     {
-                        VLC.playlist.items.clear();
-                        VLC.playlist.add(Settings.MRL);
-                    }
-                });
+                        lock (VLC)
+                        {
+                            VLC.playlist.items.clear();
+                            VLC.playlist.add(Settings.MRL);
+                        }
+                    });
+                }
+                OldMRL = Settings.MRL;
+
+                if (VLC != null)
+                {
+                    InvokeIfNeeded(() =>
+                    {
+                        lock (VLC)
+                        {
+                            VLC.audio.mute = true;
+                            VLC.Volume = 5;
+                        }
+                    });
+                }
             }
         }
 
-        public void RenameComparison(string oldName, string newName)
+        public override void Dispose()
         {
+            base.Dispose();
+
+            State.OnReset -= state_OnReset;
+            State.OnStart -= state_OnStart;
+            State.OnPause -= state_OnPause;
+            State.OnResume -= state_OnResume;
+            if (SynchronizeTimer != null)
+                SynchronizeTimer.Dispose();
         }
-
-        #endregion
-
-        #region Unsafe Native Methods
-
-        [DllImport("user32.dll", SetLastError = true, ExactSpelling = true)]
-        public static extern IntPtr WindowFromDC(HandleRef hDC);
-
-        #endregion
     }
 }
