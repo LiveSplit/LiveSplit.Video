@@ -56,7 +56,7 @@ namespace LiveSplit.UI.Components
 
         public Version Version
         {
-            get { return Version.Parse("1.0.1"); }
+            get { return Version.Parse("1.1.0"); }
         }
     }
 }
