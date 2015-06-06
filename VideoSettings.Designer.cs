@@ -91,7 +91,7 @@
             this.txtVideoPath.Location = new System.Drawing.Point(85, 4);
             this.txtVideoPath.Name = "txtVideoPath";
             this.txtVideoPath.Size = new System.Drawing.Size(293, 20);
-            this.txtVideoPath.TabIndex = 2;
+            this.txtVideoPath.TabIndex = 0;
             // 
             // label2
             // 
@@ -110,7 +110,7 @@
             this.txtOffset.Location = new System.Drawing.Point(85, 33);
             this.txtOffset.Name = "txtOffset";
             this.txtOffset.Size = new System.Drawing.Size(374, 20);
-            this.txtOffset.TabIndex = 5;
+            this.txtOffset.TabIndex = 2;
             this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // trkHeightWidth
@@ -120,7 +120,7 @@
             this.trkHeightWidth.Location = new System.Drawing.Point(85, 61);
             this.trkHeightWidth.Name = "trkHeightWidth";
             this.trkHeightWidth.Size = new System.Drawing.Size(374, 24);
-            this.trkHeightWidth.TabIndex = 6;
+            this.trkHeightWidth.TabIndex = 3;
             this.trkHeightWidth.TickStyle = System.Windows.Forms.TickStyle.None;
             // 
             // lblHeightWidth
