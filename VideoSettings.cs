@@ -21,7 +21,6 @@ namespace LiveSplit.Video
     {
         public String MRL { get { return HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25")); } }
         public String VideoPath { get; set; }
-        //public bool PerSegmentVideo { get; set; }
         public TimeSpan Offset { get; set; }
         public float Height { get; set; }
         public float Width { get; set; }
@@ -57,10 +56,8 @@ namespace LiveSplit.Video
             VideoPath = "";
             Width = 200;
             Height = 200;
-            //PerSegmentVideo = false;
             Offset = TimeSpan.Zero;
 
-            //chkPerSegment.DataBindings.Add("Checked", this, "PerSegmentVideo", false, DataSourceUpdateMode.OnPropertyChanged);
             txtVideoPath.DataBindings.Add("Text", this, "VideoPath", false, DataSourceUpdateMode.OnPropertyChanged);
             txtOffset.DataBindings.Add("Text", this, "OffsetString");
         }
@@ -68,42 +65,21 @@ namespace LiveSplit.Video
         public void SetSettings(XmlNode node)
         {
             var element = (XmlElement)node;
-            Version version;
-            if (element["Version"] != null)
-                version = Version.Parse(element["Version"].InnerText);
-            else
-                version = new Version(1, 0, 0, 0);
-            VideoPath = element["VideoPath"].InnerText;
-            OffsetString = element["Offset"].InnerText;
-            Height = Single.Parse(element["Height"].InnerText, CultureInfo.InvariantCulture);
-            Width = Single.Parse(element["Width"].InnerText, CultureInfo.InvariantCulture);
-            //PerSegmentVideo = Boolean.Parse(element["PerSegmentVideo"].InnerText);
+            VideoPath = SettingsHelper.ParseString(element["VideoPath"]);
+            OffsetString = SettingsHelper.ParseString(element["Offset"]);
+            Height = SettingsHelper.ParseFloat(element["Height"]);
+            Width = SettingsHelper.ParseFloat(element["Width"]);
         }
 
         public XmlNode GetSettings(XmlDocument document)
         {
             var parent = document.CreateElement("Settings");
-            parent.AppendChild(ToElement(document, "Version", "1.4"));
-            parent.AppendChild(ToElement(document, "VideoPath", VideoPath));
-            parent.AppendChild(ToElement(document, "Offset", OffsetString));
-            parent.AppendChild(ToElement(document, "Height", Height));
-            parent.AppendChild(ToElement(document, "Width", Height));
-            //parent.AppendChild(ToElement(document, "PerSegmentVideo", PerSegmentVideo));
+            parent.AppendChild(SettingsHelper.ToElement(document, "Version", "1.4"));
+            parent.AppendChild(SettingsHelper.ToElement(document, "VideoPath", VideoPath));
+            parent.AppendChild(SettingsHelper.ToElement(document, "Offset", OffsetString));
+            parent.AppendChild(SettingsHelper.ToElement(document, "Height", Height));
+            parent.AppendChild(SettingsHelper.ToElement(document, "Width", Height));
             return parent;
-        }
-
-        private XmlElement ToElement<T>(XmlDocument document, String name, T value)
-        {
-            var element = document.CreateElement(name);
-            element.InnerText = value.ToString();
-            return element;
-        }
-
-        private XmlElement ToElement(XmlDocument document, String name, float value)
-        {
-            var element = document.CreateElement(name);
-            element.InnerText = value.ToString(CultureInfo.InvariantCulture);
-            return element;
         }
 
         private void btnSelectFile_Click(object sender, EventArgs e)
