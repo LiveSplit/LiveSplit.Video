@@ -40,7 +40,7 @@ namespace LiveSplit.Video
         }
     }
 
-    public static partial class User32
+    internal static class User32
     {
         [DllImport("User32.dll")]
         public static extern int SendMessage(IntPtr hWnd, WM Msg, int wParam, int lParam);
