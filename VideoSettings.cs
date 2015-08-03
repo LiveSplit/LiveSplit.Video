@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
+﻿using LiveSplit.Model;
+using LiveSplit.Options;
+using LiveSplit.TimeFormatters;
+using LiveSplit.UI;
+using System;
 using System.Windows.Forms;
 using System.Xml;
-using LiveSplit.TimeFormatters;
 using System.Text.RegularExpressions;
-using LiveSplit.Options;
-using System.Globalization;
-using LiveSplit.Model;
-using LiveSplit.UI;
 using System.Web;
 
 namespace LiveSplit.Video
