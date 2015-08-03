@@ -111,6 +111,9 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VideoSettings.ja-JP.resx">
+      <DependentUpon>VideoSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VideoSettings.resx">
       <DependentUpon>VideoSettings.cs</DependentUpon>
     </EmbeddedResource>
