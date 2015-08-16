@@ -67,12 +67,22 @@ namespace LiveSplit.Video
         public XmlNode GetSettings(XmlDocument document)
         {
             var parent = document.CreateElement("Settings");
-            parent.AppendChild(SettingsHelper.ToElement(document, "Version", "1.4"));
-            parent.AppendChild(SettingsHelper.ToElement(document, "VideoPath", VideoPath));
-            parent.AppendChild(SettingsHelper.ToElement(document, "Offset", OffsetString));
-            parent.AppendChild(SettingsHelper.ToElement(document, "Height", Height));
-            parent.AppendChild(SettingsHelper.ToElement(document, "Width", Height));
+            CreateSettingsNode(document, parent);
             return parent;
+        }
+
+        public int GetSettingsHashCode()
+        {
+            return CreateSettingsNode(null, null);
+        }
+
+        private int CreateSettingsNode(XmlDocument document, XmlElement parent)
+        {
+            return SettingsHelper.CreateSetting(document, parent, "Version", "1.4") ^
+            SettingsHelper.CreateSetting(document, parent, "VideoPath", VideoPath) ^
+            SettingsHelper.CreateSetting(document, parent, "Offset", OffsetString) ^
+            SettingsHelper.CreateSetting(document, parent, "Height", Height) ^
+            SettingsHelper.CreateSetting(document, parent, "Width", Height);
         }
 
         private void btnSelectFile_Click(object sender, EventArgs e)

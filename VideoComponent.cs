@@ -249,5 +249,10 @@ namespace LiveSplit.Video
             if (SynchronizeTimer != null)
                 SynchronizeTimer.Dispose();
         }
+
+        public int GetSettingsHashCode()
+        {
+            return Settings.GetSettingsHashCode();
+        }
     }
 }
