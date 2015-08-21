@@ -64,7 +64,8 @@ namespace LiveSplit.Video
 
         static void ErrorCallback(Form form, Exception ex)
         {
-            MessageBox.Show(form, "The newest 32-bit version of the VLC Media Player along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            string requiredBits = Environment.Is64BitProcess ? "64" : "32";
+            MessageBox.Show(form, "The newest " + requiredBits + "-bit version of the VLC Media Player along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         void state_OnResume(object sender, EventArgs e)
