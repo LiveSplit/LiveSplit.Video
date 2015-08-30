@@ -220,11 +220,11 @@ namespace LiveSplit.Video
 
         public override void Update(UI.IInvalidator invalidator, Model.LiveSplitState state, float width, float height, UI.LayoutMode mode)
         {
-            if (!wrongVLCVersion)
+            if (!wrongVLCVersion && !VLC.IsDisposed)
             {
                 try
                 {
-                    VLC.playlist.stop();
+                    var playlist = VLC.playlist;
                 }
                 catch (InvalidCastException ex)
                 {
@@ -249,11 +249,8 @@ namespace LiveSplit.Video
                         {
                             lock (VLC)
                             {
-                                if (!VLC.IsDisposed)
-                                {
-                                    VLC.playlist.items.clear();
-                                    VLC.playlist.add(Settings.MRL);
-                                }
+                                VLC.playlist.items.clear();
+                                VLC.playlist.add(Settings.MRL);
                             }
                         });
                     }
@@ -265,11 +262,8 @@ namespace LiveSplit.Video
                         {
                             lock (VLC)
                             {
-                                if (!VLC.IsDisposed)
-                                {
-                                    VLC.audio.mute = true;
-                                    VLC.Volume = 5;
-                                }
+                                VLC.audio.mute = true;
+                                VLC.Volume = 5;
                             }
                         });
                     }
