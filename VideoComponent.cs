@@ -2,7 +2,9 @@
 using LiveSplit.Model;
 using LiveSplit.UI.Components;
 using System;
+using System.Collections;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace LiveSplit.Video
 {
@@ -12,7 +14,9 @@ namespace LiveSplit.Video
         public LiveSplitState State { get; set; }
         public System.Timers.Timer SynchronizeTimer { get; set; }
 
-        protected String OldMRL { get; set; }
+        private bool wrongVLCVersion;
+
+        protected string OldMRL { get; set; }
 
         public override string ComponentName
         {
@@ -54,17 +58,6 @@ namespace LiveSplit.Video
             Settings.txtVideoPath.TextChanged += txtMRL_TextChanged;
             State = state;
             VLC = vlc;
-            try
-            {
-                VLC.playlist.stop();
-            }
-            catch
-            {
-                Dispose();
-                ErrorCallback(state.Form, null);
-                throw new Exception();
-            }
-            //Control.Visible = false;
 
             state.OnReset += state_OnReset;
             state.OnStart += state_OnStart;
@@ -136,7 +129,6 @@ namespace LiveSplit.Video
                 {
                     lock (VLC)
                     {
-                        //System.Diagnostics.Debug.WriteLine("Synchronizing: " + (VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds) + " State: " + VLC.input.state);
                         if (VLC.input.state == 3)
                         {
                             var delta = VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds;
@@ -208,46 +200,76 @@ namespace LiveSplit.Video
         public override void SetSettings(System.Xml.XmlNode settings)
         {
             Settings.SetSettings(settings);
+        }
 
+        public override void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
+        {
+            base.DrawVertical(g, state, width, clipRegion);
+
+            if (wrongVLCVersion)
+                throw new Exception();
+        }
+
+        public override void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
+        {
+            base.DrawHorizontal(g, state, height, clipRegion);
+
+            if (wrongVLCVersion)
+                throw new Exception();
         }
 
         public override void Update(UI.IInvalidator invalidator, Model.LiveSplitState state, float width, float height, UI.LayoutMode mode)
         {
-            base.Update(invalidator, state, width, height, mode);
-
-            if (!Initialized)
+            if (!wrongVLCVersion)
             {
-                Control.Visible = !Control.Created;
-                Initialized = Control.Created;
-            }
-            else
-            {
-                if (VLC != null && OldMRL != Settings.MRL && !String.IsNullOrEmpty(Settings.MRL))
+                try
                 {
-                    InvokeIfNeeded(() =>
-                    {
-                        lock (VLC)
-                        {
-                            VLC.playlist.items.clear();
-                            VLC.playlist.add(Settings.MRL);
-                        }
-                    });
+                    VLC.playlist.stop();
                 }
-                OldMRL = Settings.MRL;
-
-                if (VLC != null)
+                catch (InvalidCastException ex)
                 {
-                    InvokeIfNeeded(() =>
+                    Dispose();
+                    ErrorCallback(state.Form, null);
+                    wrongVLCVersion = true;
+                    return;
+                }
+
+                base.Update(invalidator, state, width, height, mode);
+
+                if (!Initialized)
+                {
+                    Control.Visible = !Control.Created;
+                    Initialized = Control.Created;
+                }
+                else
+                {
+                    if (VLC != null && OldMRL != Settings.MRL && !String.IsNullOrEmpty(Settings.MRL))
                     {
-                        lock (VLC)
+                        InvokeIfNeeded(() =>
                         {
-                            if (!VLC.IsDisposed)
+                            lock (VLC)
                             {
-                                VLC.audio.mute = true;
-                                VLC.Volume = 5;
+                                VLC.playlist.items.clear();
+                                VLC.playlist.add(Settings.MRL);
                             }
-                        }
-                    });
+                        });
+                    }
+                    OldMRL = Settings.MRL;
+
+                    if (VLC != null)
+                    {
+                        InvokeIfNeeded(() =>
+                        {
+                            lock (VLC)
+                            {
+                                if (!VLC.IsDisposed)
+                                {
+                                    VLC.audio.mute = true;
+                                    VLC.Volume = 5;
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
