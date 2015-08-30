@@ -249,8 +249,11 @@ namespace LiveSplit.Video
                         {
                             lock (VLC)
                             {
-                                VLC.playlist.items.clear();
-                                VLC.playlist.add(Settings.MRL);
+                                if (!VLC.IsDisposed)
+                                {
+                                    VLC.playlist.items.clear();
+                                    VLC.playlist.add(Settings.MRL);
+                                }
                             }
                         });
                     }
