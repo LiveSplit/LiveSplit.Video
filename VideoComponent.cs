@@ -241,8 +241,11 @@ namespace LiveSplit.Video
                     {
                         lock (VLC)
                         {
-                            VLC.audio.mute = true;
-                            VLC.Volume = 5;
+                            if (!VLC.IsDisposed)
+                            {
+                                VLC.audio.mute = true;
+                                VLC.Volume = 5;
+                            }
                         }
                     });
                 }
