@@ -12,8 +12,8 @@ namespace LiveSplit.Video
 {
     public partial class VideoSettings : UserControl
     {
-        public String MRL { get { return HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25")); } }
-        public String VideoPath { get; set; }
+        public string MRL => HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25"));
+        public string VideoPath { get; set; }
         public TimeSpan Offset { get; set; }
         public float Height { get; set; }
         public float Width { get; set; }
@@ -21,7 +21,7 @@ namespace LiveSplit.Video
 
         protected ITimeFormatter TimeFormatter { get; set; }
 
-        public String OffsetString
+        public string OffsetString
         {
             get
             {

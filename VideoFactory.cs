@@ -6,52 +6,20 @@ namespace LiveSplit.UI.Components
 {
     public class VideoFactory : IComponentFactory
     {
-        public string ComponentName
-        {
-            get { return "Video"; }
-        }
+        public string ComponentName => "Video";
 
-        public string Description
-        {
-            get { return "Shows a PB or WR video that is synced up to the current run time."; }
-        }
+        public string Description => "Shows a PB or WR video that is synced up to the current run time.";
 
-        public ComponentCategory Category
-        {
-            get { return ComponentCategory.Media; }
-        }
+        public ComponentCategory Category => ComponentCategory.Media;
 
-        public IComponent Create(LiveSplitState state)
-        {
-            return new VideoComponent(state);
-        }
+        public IComponent Create(LiveSplitState state) => new VideoComponent(state);
 
-        public string UpdateName
-        {
-            get { return ComponentName; }
-        }
+        public string UpdateName => ComponentName;
 
-        public string XMLURL
-        {
-#if RELEASE_CANDIDATE
-            get { return "http://livesplit.org/update_rc_sdhjdop/Components/update.LiveSplit.Video.xml"; }
-#else
-            get { return "http://livesplit.org/update/Components/update.LiveSplit.Video.xml"; }
-#endif
-        }
+        public string XMLURL => "http://livesplit.org/update/Components/update.LiveSplit.Video.xml";
 
-        public string UpdateURL
-        {
-#if RELEASE_CANDIDATE
-            get { return "http://livesplit.org/update_rc_sdhjdop/"; }
-#else
-            get { return "http://livesplit.org/update/"; }
-#endif
-        }
+        public string UpdateURL => "http://livesplit.org/update/";
 
-        public Version Version
-        {
-            get { return Version.Parse("1.6.1"); }
-        }
+        public Version Version => Version.Parse("1.6.1");
     }
 }

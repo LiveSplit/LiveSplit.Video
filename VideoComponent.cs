@@ -2,9 +2,9 @@
 using LiveSplit.Model;
 using LiveSplit.UI.Components;
 using System;
-using System.Collections;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Xml;
 
 namespace LiveSplit.Video
 {
@@ -18,38 +18,22 @@ namespace LiveSplit.Video
 
         protected string OldMRL { get; set; }
 
-        public override string ComponentName
-        {
-            get { return "Video"; }
-        }
+        public override string ComponentName => "Video";
 
-        public override float HorizontalWidth
-        {
-            get { return Settings.Width; }
-        }
+        public override float HorizontalWidth => Settings.Width;
 
-        public override float MinimumHeight
-        {
-            get { return 10; }
-        }
+        public override float MinimumHeight => 10;
 
-        public override float VerticalHeight
-        {
-            get { return Settings.Height; }
-        }
+        public override float VerticalHeight => Settings.Height;
 
-        public override float MinimumWidth
-        {
-            get { return 10; }
-        }
+        public override float MinimumWidth => 10;
 
         public AxVLCPlugin2 VLC { get; set; }
         public bool Initialized { get; set; }
 
-        public VideoComponent(LiveSplitState state) 
+        public VideoComponent(LiveSplitState state)
             : this(state, CreateVLCControl())
-        {
-        }
+        { }
 
         public VideoComponent(LiveSplitState state, AxVLCPlugin2 vlc)
             : base(state, vlc, ex => ErrorCallback(state.Form, ex))
@@ -163,12 +147,12 @@ namespace LiveSplit.Video
 
         private static AxVLCPlugin2 CreateVLCControl()
         {
-            var vlc = new AxAXVLC.AxVLCPlugin2();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            var vlc = new AxVLCPlugin2();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
             ((System.ComponentModel.ISupportInitialize)(vlc)).BeginInit();
             vlc.Enabled = true;
             vlc.Name = "vlc";
-            vlc.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axVLCPlugin21.OcxState")));
+            vlc.OcxState = ((AxHost.State)(resources.GetObject("axVLCPlugin21.OcxState")));
             ((System.ComponentModel.ISupportInitialize)(vlc)).EndInit();
 
             return vlc;
@@ -176,7 +160,7 @@ namespace LiveSplit.Video
 
         void txtMRL_TextChanged(object sender, EventArgs e)
         {
-            if (VLC != null && !String.IsNullOrEmpty(Settings.txtVideoPath.Text))
+            if (VLC != null && !string.IsNullOrEmpty(Settings.txtVideoPath.Text))
             {
                 lock (VLC)
                 {
@@ -186,18 +170,18 @@ namespace LiveSplit.Video
             }
         }
 
-        public override System.Windows.Forms.Control GetSettingsControl(UI.LayoutMode mode)
+        public override Control GetSettingsControl(UI.LayoutMode mode)
         {
             Settings.Mode = mode;
             return Settings;
         }
 
-        public override System.Xml.XmlNode GetSettings(System.Xml.XmlDocument document)
+        public override XmlNode GetSettings(XmlDocument document)
         {
             return Settings.GetSettings(document);
         }
 
-        public override void SetSettings(System.Xml.XmlNode settings)
+        public override void SetSettings(XmlNode settings)
         {
             Settings.SetSettings(settings);
         }
@@ -218,7 +202,7 @@ namespace LiveSplit.Video
                 throw new Exception();
         }
 
-        public override void Update(UI.IInvalidator invalidator, Model.LiveSplitState state, float width, float height, UI.LayoutMode mode)
+        public override void Update(UI.IInvalidator invalidator, LiveSplitState state, float width, float height, UI.LayoutMode mode)
         {
             if (!wrongVLCVersion && !VLC.IsDisposed)
             {
@@ -243,7 +227,7 @@ namespace LiveSplit.Video
                 }
                 else
                 {
-                    if (VLC != null && OldMRL != Settings.MRL && !String.IsNullOrEmpty(Settings.MRL))
+                    if (VLC != null && OldMRL != Settings.MRL && !string.IsNullOrEmpty(Settings.MRL))
                     {
                         InvokeIfNeeded(() =>
                         {
@@ -283,9 +267,6 @@ namespace LiveSplit.Video
                 SynchronizeTimer.Dispose();
         }
 
-        public int GetSettingsHashCode()
-        {
-            return Settings.GetSettingsHashCode();
-        }
+        public int GetSettingsHashCode() => Settings.GetSettingsHashCode();
     }
 }
