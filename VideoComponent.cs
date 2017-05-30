@@ -14,7 +14,7 @@ namespace LiveSplit.Video
         public LiveSplitState State { get; set; }
         public System.Timers.Timer SynchronizeTimer { get; set; }
 
-        private bool wrongVLCVersion;
+        private class VLCErrorException : Exception { }
 
         protected string OldMRL { get; set; }
 
@@ -186,38 +186,31 @@ namespace LiveSplit.Video
             Settings.SetSettings(settings);
         }
 
+        private void DisposeIfError()
+        {
+            if (ErrorWithControl && !VLC.IsDisposed)
+            {
+                Dispose();
+                throw new VLCErrorException();
+            }
+        }
+
         public override void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
         {
             base.DrawVertical(g, state, width, clipRegion);
-
-            if (wrongVLCVersion)
-                throw new Exception();
+            DisposeIfError();
         }
 
         public override void DrawHorizontal(Graphics g, LiveSplitState state, float height, Region clipRegion)
         {
             base.DrawHorizontal(g, state, height, clipRegion);
-
-            if (wrongVLCVersion)
-                throw new Exception();
+            DisposeIfError();
         }
 
         public override void Update(UI.IInvalidator invalidator, LiveSplitState state, float width, float height, UI.LayoutMode mode)
         {
-            if (!wrongVLCVersion && !VLC.IsDisposed)
+            if (!VLC.IsDisposed)
             {
-                try
-                {
-                    var playlist = VLC.playlist;
-                }
-                catch (InvalidCastException ex)
-                {
-                    Dispose();
-                    ErrorCallback(state.Form, null);
-                    wrongVLCVersion = true;
-                    return;
-                }
-
                 base.Update(invalidator, state, width, height, mode);
 
                 if (!Initialized)
