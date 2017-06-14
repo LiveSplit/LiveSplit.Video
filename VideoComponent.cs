@@ -39,7 +39,6 @@ namespace LiveSplit.Video
             : base(state, vlc, ex => ErrorCallback(state.Form, ex))
         {
             Settings = new VideoSettings();
-            Settings.txtVideoPath.TextChanged += txtMRL_TextChanged;
             State = state;
             VLC = vlc;
 
@@ -156,18 +155,6 @@ namespace LiveSplit.Video
             ((System.ComponentModel.ISupportInitialize)(vlc)).EndInit();
 
             return vlc;
-        }
-
-        void txtMRL_TextChanged(object sender, EventArgs e)
-        {
-            if (VLC != null && !string.IsNullOrEmpty(Settings.txtVideoPath.Text))
-            {
-                lock (VLC)
-                {
-                    VLC.playlist.items.clear();
-                    VLC.playlist.add(Settings.txtVideoPath.Text);
-                }
-            }
         }
 
         public override Control GetSettingsControl(UI.LayoutMode mode)
