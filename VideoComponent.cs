@@ -95,6 +95,11 @@ namespace LiveSplit.Video
             Synchronize(TimeSpan.Zero);
         }
 
+        private TimeSpan GetCurrentTime()
+        {
+            return State.CurrentTime[TimingMethod.RealTime].Value;
+        }
+
         public void Synchronize(TimeSpan offset)
         {
             if (SynchronizeTimer != null && SynchronizeTimer.Enabled)
@@ -102,7 +107,7 @@ namespace LiveSplit.Video
             InvokeIfNeeded(() =>
             {
                 lock (VLC)
-                    VLC.input.Time = (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds;
+                    VLC.input.Time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
             });
             SynchronizeTimer = new System.Timers.Timer(1000);
 
@@ -114,9 +119,10 @@ namespace LiveSplit.Video
                     {
                         if (VLC.input.state == 3)
                         {
-                            var delta = VLC.input.Time - (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds;
+                            var currentTime = GetCurrentTime();
+                            var delta = VLC.input.Time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
                             if (Math.Abs(delta) > 500)
-                                VLC.input.Time = (State.CurrentTime[State.CurrentTimingMethod].Value + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
+                                VLC.input.Time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
                             else
                                 SynchronizeTimer.Enabled = false;
                         }
