@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.IO;
 
 namespace LiveSplit.Video
 {
@@ -89,9 +90,13 @@ namespace LiveSplit.Video
         {
             var dialog = new OpenFileDialog()
             {
-                FileName = VideoPath,
                 Filter = "Video Files|*.avi;*.mpeg;*.mpg;*.mp4;*.mov;*.wmv;*.m4v;*.flv;*.mkv;*.ogg|All Files (*.*)|*.*"
             };
+            if (File.Exists(VideoPath))
+            {
+                dialog.InitialDirectory = Path.GetDirectoryName(VideoPath);
+                dialog.FileName = Path.GetFileName(VideoPath);
+            }
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
                 VideoPath = txtVideoPath.Text = dialog.FileName;
