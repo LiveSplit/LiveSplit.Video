@@ -216,3 +216,4 @@ $RECYCLE.BIN/
 #user
 NuGetUpgradeLog.html
 .vs/*
+MigrationBackup/*
