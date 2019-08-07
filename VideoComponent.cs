@@ -8,6 +8,7 @@ using LibVLCSharp.Shared;
 using LibVLCSharp.WinForms;
 using System.Diagnostics;
 using System.Linq;
+using System.ComponentModel;
 
 namespace LiveSplit.Video
 {
@@ -45,7 +46,7 @@ namespace LiveSplit.Video
         {
         }
 
-        public VideoComponent(LiveSplitState state, VideoView vview) : base(state,vview, ex => ErrorCallback(state.Form,ex))
+        public VideoComponent(LiveSplitState state, VideoView vview) : base(state, vview, ex => ErrorCallback(state.Form, ex))
         {
             Settings = new VideoSettings();
             State = state;
@@ -64,12 +65,22 @@ namespace LiveSplit.Video
             state.OnResume += state_OnResume;
         }
 
+        public delegate void InvokeAction(ISynchronizeInvoke control, Action action);
+
+        public static void Lock(ISynchronizeInvoke control, Action action)
+        {
+            lock (control)
+            {
+                action();
+            }
+        }
+
         public new void InvokeIfNeeded(Action x)
         {
             if (Control != null && Control.InvokeRequired)
-                Control.Invoke(x);
+                Control.Invoke((InvokeAction)Lock, Control, x);
             else
-                x();
+                Lock(Control,x);
         }
 
         static void ErrorCallback(Form form, Exception ex)
@@ -81,35 +92,27 @@ namespace LiveSplit.Video
 
         void state_OnResume(object sender, EventArgs e)
         {
-            InvokeIfNeeded(() =>
+            InvokeIfNeeded(delegate
             {
-                lock (Control)
-                {
-                    mediaPlayer.Play();
-                }
+                mediaPlayer.Play();
             });
         }
 
         void state_OnPause(object sender, EventArgs e)
         {
-            InvokeIfNeeded(() =>
+            InvokeIfNeeded(delegate
             {
-                lock (Control)
-                {
-                    mediaPlayer.Pause();
-                }
+                mediaPlayer.Pause();
+
             });
         }
 
         void state_OnStart(object sender, EventArgs e)
         {
-            InvokeIfNeeded(() =>
+            InvokeIfNeeded(delegate
             {
-                lock (Control)
-                {
-                    mediaPlayer.Play();
-                    Control.Visible = true;
-                }
+                mediaPlayer.Play();
+                Control.Visible = true;
             });
             Synchronize();
         }
@@ -128,37 +131,33 @@ namespace LiveSplit.Video
         {
             if (SynchronizeTimer != null && SynchronizeTimer.Enabled)
                 SynchronizeTimer.Enabled = false;
-            InvokeIfNeeded(() =>
+            InvokeIfNeeded(delegate
             {
-                lock (Control)
-                    //VLC.input.Time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
-                    mediaPlayer.Time = (GetCurrentTime() + offset + Settings.Offset).Milliseconds;
+                //VLC.input.Time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
+                mediaPlayer.Time = (GetCurrentTime() + offset + Settings.Offset).Milliseconds;
             });
             SynchronizeTimer = new System.Timers.Timer(1000);
 
             SynchronizeTimer.Elapsed += (s, ev) =>
             {
-                InvokeIfNeeded(() =>
+                InvokeIfNeeded(delegate
                 {
-                    lock (Control)
+                    //if (VLC.input.state == 3)
+                    if (mediaPlayer.State == VLCState.Playing)
                     {
-                        //if (VLC.input.state == 3)
-                        if (mediaPlayer.State == VLCState.Playing)
-                        {
-                            var currentTime = GetCurrentTime();
-                            //var delta = VLC.input.Time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
-                            var delta = mediaPlayer.Time - (currentTime + offset + Settings.Offset).Milliseconds;
-                            if (Math.Abs(delta) > 500)
-                                //VLC.input.Time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
-                                mediaPlayer.Time = (currentTime + offset + Settings.Offset).Milliseconds + Math.Max(0, -delta);
-                            else
-                                SynchronizeTimer.Enabled = false;
-                        }
-                        //else if (VLC.state == 5)
-                        else if (mediaPlayer.State == VLCState.Stopped)
-                        {
+                        var currentTime = GetCurrentTime();
+                        //var delta = VLC.input.Time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
+                        var delta = mediaPlayer.Time - (currentTime + offset + Settings.Offset).Milliseconds;
+                        if (Math.Abs(delta) > 500)
+                            //VLC.input.Time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
+                            mediaPlayer.Time = (currentTime + offset + Settings.Offset).Milliseconds + Math.Max(0, -delta);
+                        else
                             SynchronizeTimer.Enabled = false;
-                        }
+                    }
+                    //else if (VLC.state == 5)
+                    else if (mediaPlayer.State == VLCState.Stopped)
+                    {
+                        SynchronizeTimer.Enabled = false;
                     }
                 });
             };
@@ -168,14 +167,11 @@ namespace LiveSplit.Video
 
         void state_OnReset(object sender, TimerPhase e)
         {
-            InvokeIfNeeded(() =>
+            InvokeIfNeeded(delegate
             {
-                lock (Control)
-                {
-                    //VLC.playlist.stop();
-                    mediaPlayer.Stop();
-                    Control.Visible = false;
-                }
+                //VLC.playlist.stop();
+                mediaPlayer.Stop();
+                Control.Visible = false;
             });
         }
 
@@ -248,16 +244,12 @@ namespace LiveSplit.Video
                 {
                     if (mediaPlayer != null && OldPath != Settings.VideoPath && !string.IsNullOrEmpty(Settings.VideoPath))
                     {
-                        InvokeIfNeeded(() =>
+                        InvokeIfNeeded(delegate
                         {
-                            lock (Control)
-                            {
-                                //VLC.playlist.add(Settings.MRL);
-                                var media = new Media(libVLC, Settings.VideoPath, FromType.FromPath);
-                                mediaPlayer.Media = media;
-                                mediaPlayer.Volume = 0;
-                                Debug.WriteLine("Video Component media changed.");
-                            }
+                            //VLC.playlist.add(Settings.MRL);
+                            mediaPlayer.Media = new Media(libVLC, Settings.VideoPath, FromType.FromPath); ;
+                            mediaPlayer.Volume = 0;
+                            Debug.WriteLine("Video Component media changed.");
                         });
                     }
                     OldPath = Settings.VideoPath;
@@ -291,6 +283,7 @@ namespace LiveSplit.Video
                 {
                     mediaPlayer.Media = null;
                     var mp = mediaPlayer;
+                    //for some reason using mediaPlayer here doesn't work
                     ((VideoView)Control).MediaPlayer = null;
                     mp?.Dispose();
                 }
