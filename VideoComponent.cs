@@ -1,5 +1,4 @@
-﻿//using AxAXVLC;
-using LiveSplit.Model;
+﻿using LiveSplit.Model;
 using LiveSplit.UI.Components;
 using System;
 using System.Windows.Forms;
@@ -8,6 +7,7 @@ using System.Xml;
 using LibVLCSharp.Shared;
 using LibVLCSharp.WinForms;
 using System.Diagnostics;
+using System.Linq;
 
 namespace LiveSplit.Video
 {
@@ -31,11 +31,7 @@ namespace LiveSplit.Video
 
         public override float MinimumWidth => 10;
 
-        //public AxVLCPlugin2 VLC { get; set; }
-
-        public bool Initialized { get; set; }
-
-        private static readonly LibVLC libVLC;
+        private static LibVLC libVLC;
 
         public MediaPlayer mediaPlayer => ((VideoView)Control).MediaPlayer;
 
@@ -89,7 +85,7 @@ namespace LiveSplit.Video
             {
                 lock (Control)
                 {
-                    ((VideoView)Control).MediaPlayer.Play();
+                    mediaPlayer.Play();
                 }
             });
         }
@@ -100,7 +96,7 @@ namespace LiveSplit.Video
             {
                 lock (Control)
                 {
-                    ((VideoView)Control).MediaPlayer.Pause();
+                    mediaPlayer.Pause();
                 }
             });
         }
@@ -111,7 +107,7 @@ namespace LiveSplit.Video
             {
                 lock (Control)
                 {
-                    ((VideoView)Control).MediaPlayer.Play();
+                    mediaPlayer.Play();
                     Control.Visible = true;
                 }
             });
@@ -147,19 +143,19 @@ namespace LiveSplit.Video
                     lock (Control)
                     {
                         //if (VLC.input.state == 3)
-                        if (((VideoView)Control).MediaPlayer.State == VLCState.Playing)
+                        if (mediaPlayer.State == VLCState.Playing)
                         {
                             var currentTime = GetCurrentTime();
                             //var delta = VLC.input.Time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
-                            var delta = ((VideoView)Control).MediaPlayer.Time - (currentTime + offset + Settings.Offset).Milliseconds;
+                            var delta = mediaPlayer.Time - (currentTime + offset + Settings.Offset).Milliseconds;
                             if (Math.Abs(delta) > 500)
                                 //VLC.input.Time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
-                                ((VideoView)Control).MediaPlayer.Time = (currentTime + offset + Settings.Offset).Milliseconds + Math.Max(0, -delta);
+                                mediaPlayer.Time = (currentTime + offset + Settings.Offset).Milliseconds + Math.Max(0, -delta);
                             else
                                 SynchronizeTimer.Enabled = false;
                         }
                         //else if (VLC.state == 5)
-                        else if (((VideoView)Control).MediaPlayer.State == VLCState.Stopped)
+                        else if (mediaPlayer.State == VLCState.Stopped)
                         {
                             SynchronizeTimer.Enabled = false;
                         }
@@ -185,6 +181,11 @@ namespace LiveSplit.Video
 
         private static VideoView CreateVLCControl()
         {
+            if (libVLC == null)
+            {
+                libVLC = new LibVLC(new string[] { });
+            }
+
             VideoView vv = new VideoView()
             {
                 //System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
@@ -237,6 +238,7 @@ namespace LiveSplit.Video
 
         public override void Update(UI.IInvalidator invalidator, LiveSplitState state, float width, float height, UI.LayoutMode mode)
         {
+            State = state;
             //if (!VLC.IsDisposed)
             if(!Control.IsDisposed && !state.Form.IsDisposed)
             {
@@ -276,9 +278,33 @@ namespace LiveSplit.Video
             }
         }
 
+        public int ComponentCount()
+        {
+            return State.Layout.LayoutComponents.Count((component) => component.Component is VideoComponent);
+        }
+
         public override void Dispose()
         {
-            base.Dispose();
+            State.Form.Invoke( (Action) delegate
+            {
+                lock (Control)
+                {
+                    mediaPlayer.Media = null;
+                    var mp = mediaPlayer;
+                    ((VideoView)Control).MediaPlayer = null;
+                    mp?.Dispose();
+                }
+                base.Dispose();
+            });
+            
+            int instances = ComponentCount();
+            Debug.WriteLine($"{instances} instance(s) of {ComponentName} are still running.");
+            if (instances == 0)
+            {
+                LibVLC t = libVLC;
+                libVLC = null;
+                t?.Dispose();
+            }
 
             State.OnReset -= state_OnReset;
             State.OnStart -= state_OnStart;
