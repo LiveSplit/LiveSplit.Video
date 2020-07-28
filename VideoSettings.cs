@@ -6,17 +6,17 @@ using System;
 using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.IO;
 
 namespace LiveSplit.Video
 {
     public partial class VideoSettings : UserControl
     {
-        public string MRL => HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25"));
         public string VideoPath { get; set; }
         public TimeSpan Offset { get; set; }
+
         public float Height { get; set; }
+
         public float Width { get; set; }
         public LayoutMode Mode { get; set; }
 
@@ -100,6 +100,7 @@ namespace LiveSplit.Video
             var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
                 VideoPath = txtVideoPath.Text = dialog.FileName;
+            dialog.Dispose();
         }
 
         private void VideoSettings_Load(object sender, EventArgs e)
