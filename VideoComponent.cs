@@ -51,7 +51,7 @@ namespace LiveSplit.Video
         static void ErrorCallback(Form form, Exception ex)
         {
             string requiredBits = Environment.Is64BitProcess ? "64" : "32";
-            MessageBox.Show(form, "VLC Media Player 2.2.1 (" + requiredBits + "-bit) along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(form, "VLC Media Player 3.0.x (" + requiredBits + "-bit) along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         void state_OnResume(object sender, EventArgs e)
@@ -107,7 +107,7 @@ namespace LiveSplit.Video
             InvokeIfNeeded(() =>
             {
                 lock (VLC)
-                    VLC.input.Time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
+                    VLC.input.time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
             });
             SynchronizeTimer = new System.Timers.Timer(1000);
 
@@ -120,9 +120,9 @@ namespace LiveSplit.Video
                         if (VLC.input.state == 3)
                         {
                             var currentTime = GetCurrentTime();
-                            var delta = VLC.input.Time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
+                            var delta = VLC.input.time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
                             if (Math.Abs(delta) > 500)
-                                VLC.input.Time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
+                                VLC.input.time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
                             else
                                 SynchronizeTimer.Enabled = false;
                         }
@@ -233,7 +233,7 @@ namespace LiveSplit.Video
                             lock (VLC)
                             {
                                 VLC.audio.mute = true;
-                                VLC.Volume = 5;
+                                VLC.volume = 5;
                             }
                         });
                     }
