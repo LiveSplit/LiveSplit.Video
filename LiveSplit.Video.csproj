@@ -98,6 +98,9 @@
     <EmbeddedResource Include="ComponentHostForm.resx">
       <DependentUpon>ComponentHostForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="VideoSettings.ja-JP.resx">
+      <DependentUpon>VideoSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VideoSettings.resx">
       <DependentUpon>VideoSettings.cs</DependentUpon>
     </EmbeddedResource>
