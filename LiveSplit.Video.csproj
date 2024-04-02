@@ -1,45 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutDir>..\..\bin\$(Configuration)\Components</OutDir>
+    <TargetFramework>net4.6.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\bin\Debug\Components\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\bin\Release\Components\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Candidate|AnyCPU'">
-    <OutputPath>..\..\bin\Release Candidate\Components\</OutputPath>
-    <DefineConstants>TRACE;RELEASE_CANDIDATE</DefineConstants>
-    <Optimize>true</Optimize>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AxInterop.AXVLC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\VLC\AxInterop.AXVLC.dll</HintPath>
-    </Reference>
-    <Reference Include="Interop.AXVLC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-      <HintPath>..\..\Libs\VLC\Interop.AXVLC.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="VideoSettings.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\LiveSplit.Core\LiveSplit.Core.csproj" />
     <ProjectReference Include="..\..\UpdateManager\UpdateManager.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Web" />
+
+    <Reference Include="..\..\Libs\VLC\AxInterop.AXVLC.dll" />
+    <Reference Include="..\..\Libs\VLC\Interop.AXVLC.dll" />
+  </ItemGroup>
+
 </Project>
