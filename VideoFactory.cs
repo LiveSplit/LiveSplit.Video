@@ -1,6 +1,9 @@
 ﻿using LiveSplit.Model;
+using LiveSplit.UI.Components;
 using LiveSplit.Video;
 using System;
+
+[assembly: ComponentFactory(typeof(VideoFactory))]
 
 namespace LiveSplit.UI.Components
 {
