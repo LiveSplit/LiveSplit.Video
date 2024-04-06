@@ -233,7 +233,6 @@ namespace LiveSplit.Video
                             lock (VLC)
                             {
                                 VLC.audio.mute = true;
-                                VLC.volume = 5;
                             }
                         });
                     }
