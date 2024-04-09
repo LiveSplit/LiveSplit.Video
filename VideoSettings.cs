@@ -83,7 +83,7 @@ namespace LiveSplit.Video
             SettingsHelper.CreateSetting(document, parent, "VideoPath", VideoPath) ^
             SettingsHelper.CreateSetting(document, parent, "Offset", OffsetString) ^
             SettingsHelper.CreateSetting(document, parent, "Height", Height) ^
-            SettingsHelper.CreateSetting(document, parent, "Width", Height);
+            SettingsHelper.CreateSetting(document, parent, "Width", Width);
         }
 
         private void btnSelectFile_Click(object sender, EventArgs e)
