@@ -45,7 +45,7 @@ namespace LiveSplit.Video
         {
             InitializeComponent();
 
-            TimeFormatter = new ShortTimeFormatter();
+            TimeFormatter = new ShortTimeFormatterMilliseconds();
 
             VideoPath = "";
             Width = 200;
