@@ -25,10 +25,7 @@ public partial class VideoSettings : UserControl
 
     public string OffsetString
     {
-        get
-        {
-            return TimeFormatter.Format(Offset);
-        }
+        get => TimeFormatter.Format(Offset);
         set
         {
             if (Regex.IsMatch(value, "[^0-9:.,-]"))

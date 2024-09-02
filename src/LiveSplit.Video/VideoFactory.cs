@@ -16,7 +16,10 @@ public class VideoFactory : IComponentFactory
 
     public ComponentCategory Category => ComponentCategory.Media;
 
-    public IComponent Create(LiveSplitState state) => new VideoComponent(state);
+    public IComponent Create(LiveSplitState state)
+    {
+        return new VideoComponent(state);
+    }
 
     public string UpdateName => ComponentName;
 
