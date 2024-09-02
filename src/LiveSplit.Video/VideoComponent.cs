@@ -128,8 +128,8 @@ public class VideoComponent : ControlComponent
                 {
                     if (VLC.input.state == 3)
                     {
-                        var currentTime = GetCurrentTime();
-                        var delta = VLC.input.time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
+                        TimeSpan currentTime = GetCurrentTime();
+                        double delta = VLC.input.time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
                         if (Math.Abs(delta) > 500)
                         {
                             VLC.input.time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
@@ -168,7 +168,7 @@ public class VideoComponent : ControlComponent
     private static AxVLCPlugin2 CreateVLCControl()
     {
         var vlc = new AxVLCPlugin2();
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
+        var resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
         ((System.ComponentModel.ISupportInitialize)vlc).BeginInit();
         vlc.Enabled = true;
         vlc.Name = "vlc";

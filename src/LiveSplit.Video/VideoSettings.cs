@@ -70,7 +70,7 @@ public partial class VideoSettings : UserControl
 
     public XmlNode GetSettings(XmlDocument document)
     {
-        var parent = document.CreateElement("Settings");
+        XmlElement parent = document.CreateElement("Settings");
         CreateSettingsNode(document, parent);
         return parent;
     }
@@ -101,7 +101,7 @@ public partial class VideoSettings : UserControl
             dialog.FileName = Path.GetFileName(VideoPath);
         }
 
-        var result = dialog.ShowDialog();
+        DialogResult result = dialog.ShowDialog();
         if (result == DialogResult.OK)
         {
             VideoPath = txtVideoPath.Text = dialog.FileName;
