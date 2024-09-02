@@ -264,10 +264,7 @@ public class VideoComponent : ControlComponent
         State.OnStart -= state_OnStart;
         State.OnPause -= state_OnPause;
         State.OnResume -= state_OnResume;
-        if (SynchronizeTimer != null)
-        {
-            SynchronizeTimer.Dispose();
-        }
+        SynchronizeTimer?.Dispose();
     }
 
     public int GetSettingsHashCode()
