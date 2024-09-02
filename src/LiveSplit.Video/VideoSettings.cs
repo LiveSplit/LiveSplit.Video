@@ -17,8 +17,8 @@ public partial class VideoSettings : UserControl
     public string MRL => HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25"));
     public string VideoPath { get; set; }
     public TimeSpan Offset { get; set; }
-    public float Height { get; set; }
-    public float Width { get; set; }
+    public new float Height { get; set; }
+    public new float Width { get; set; }
     public LayoutMode Mode { get; set; }
 
     protected ITimeFormatter TimeFormatter { get; set; }
