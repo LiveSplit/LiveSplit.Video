@@ -1,28 +1,28 @@
-﻿using LiveSplit.Model;
+﻿using System;
+
+using LiveSplit.Model;
 using LiveSplit.UI.Components;
 using LiveSplit.Video;
-using System;
 
 [assembly: ComponentFactory(typeof(VideoFactory))]
 
-namespace LiveSplit.UI.Components
+namespace LiveSplit.UI.Components;
+
+public class VideoFactory : IComponentFactory
 {
-    public class VideoFactory : IComponentFactory
-    {
-        public string ComponentName => "Video";
+    public string ComponentName => "Video";
 
-        public string Description => "Shows a PB or WR video that is synced up to the current run time.";
+    public string Description => "Shows a PB or WR video that is synced up to the current run time.";
 
-        public ComponentCategory Category => ComponentCategory.Media;
+    public ComponentCategory Category => ComponentCategory.Media;
 
-        public IComponent Create(LiveSplitState state) => new VideoComponent(state);
+    public IComponent Create(LiveSplitState state) => new VideoComponent(state);
 
-        public string UpdateName => ComponentName;
+    public string UpdateName => ComponentName;
 
-        public string XMLURL => "http://livesplit.org/update/Components/update.LiveSplit.Video.xml";
+    public string XMLURL => "http://livesplit.org/update/Components/update.LiveSplit.Video.xml";
 
-        public string UpdateURL => "http://livesplit.org/update/";
+    public string UpdateURL => "http://livesplit.org/update/";
 
-        public Version Version => Version.Parse("1.8.29");
-    }
+    public Version Version => Version.Parse("1.8.29");
 }
