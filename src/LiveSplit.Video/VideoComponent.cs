@@ -50,13 +50,13 @@ public class VideoComponent : ControlComponent
         state.OnResume += state_OnResume;
     }
 
-    static void ErrorCallback(Form form, Exception ex)
+    private static void ErrorCallback(Form form, Exception ex)
     {
         string requiredBits = Environment.Is64BitProcess ? "64" : "32";
         MessageBox.Show(form, "VLC Media Player 3.0.x (" + requiredBits + "-bit) along with the ActiveX Plugin need to be installed for the Video Component to work.", "Video Component Could Not Be Loaded", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
-    void state_OnResume(object sender, EventArgs e)
+    private void state_OnResume(object sender, EventArgs e)
     {
         InvokeIfNeeded(() =>
         {
@@ -67,7 +67,7 @@ public class VideoComponent : ControlComponent
         });
     }
 
-    void state_OnPause(object sender, EventArgs e)
+    private void state_OnPause(object sender, EventArgs e)
     {
         InvokeIfNeeded(() =>
         {
@@ -78,7 +78,7 @@ public class VideoComponent : ControlComponent
         });
     }
 
-    void state_OnStart(object sender, EventArgs e)
+    private void state_OnStart(object sender, EventArgs e)
     {
         InvokeIfNeeded(() =>
         {
@@ -139,7 +139,7 @@ public class VideoComponent : ControlComponent
         SynchronizeTimer.Enabled = true;
     }
 
-    void state_OnReset(object sender, TimerPhase e)
+    private void state_OnReset(object sender, TimerPhase e)
     {
         InvokeIfNeeded(() =>
         {
