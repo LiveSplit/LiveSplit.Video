@@ -29,9 +29,14 @@ public partial class VideoSettings : UserControl
         set
         {
             if (Regex.IsMatch(value, "[^0-9:.,-]"))
+            {
                 return;
+            }
 
-            try { Offset = TimeSpanParser.Parse(value); }
+            try
+            {
+                Offset = TimeSpanParser.Parse(value);
+            }
             catch (Exception ex)
             {
                 Log.Error(ex);
@@ -95,9 +100,12 @@ public partial class VideoSettings : UserControl
             dialog.InitialDirectory = Path.GetDirectoryName(VideoPath);
             dialog.FileName = Path.GetFileName(VideoPath);
         }
+
         var result = dialog.ShowDialog();
         if (result == DialogResult.OK)
+        {
             VideoPath = txtVideoPath.Text = dialog.FileName;
+        }
     }
 
     private void VideoSettings_Load(object sender, EventArgs e)

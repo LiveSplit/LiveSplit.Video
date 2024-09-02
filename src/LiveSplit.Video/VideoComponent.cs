@@ -86,7 +86,9 @@ public class VideoComponent : ControlComponent
             {
                 VLC.playlist.play();
                 if (activated)
+                {
                     Control.Visible = true;
+                }
             }
         });
         Synchronize();
@@ -105,11 +107,16 @@ public class VideoComponent : ControlComponent
     public void Synchronize(TimeSpan offset)
     {
         if (SynchronizeTimer != null && SynchronizeTimer.Enabled)
+        {
             SynchronizeTimer.Enabled = false;
+        }
+
         InvokeIfNeeded(() =>
         {
             lock (VLC)
+            {
                 VLC.input.time = (GetCurrentTime() + offset + Settings.Offset).TotalMilliseconds;
+            }
         });
         SynchronizeTimer = new System.Timers.Timer(1000);
 
@@ -124,9 +131,13 @@ public class VideoComponent : ControlComponent
                         var currentTime = GetCurrentTime();
                         var delta = VLC.input.time - (currentTime + offset + Settings.Offset).TotalMilliseconds;
                         if (Math.Abs(delta) > 500)
+                        {
                             VLC.input.time = (currentTime + offset + Settings.Offset).TotalMilliseconds + Math.Max(0, -delta);
+                        }
                         else
+                        {
                             SynchronizeTimer.Enabled = false;
+                        }
                     }
                     else if (VLC.input.state == 5)
                     {
@@ -147,7 +158,9 @@ public class VideoComponent : ControlComponent
             {
                 VLC.playlist.stop();
                 if (activated)
+                {
                     Control.Visible = false;
+                }
             }
         });
     }
@@ -156,11 +169,11 @@ public class VideoComponent : ControlComponent
     {
         var vlc = new AxVLCPlugin2();
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
-        ((System.ComponentModel.ISupportInitialize)(vlc)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)vlc).BeginInit();
         vlc.Enabled = true;
         vlc.Name = "vlc";
-        vlc.OcxState = ((AxHost.State)(resources.GetObject("axVLCPlugin21.OcxState")));
-        ((System.ComponentModel.ISupportInitialize)(vlc)).EndInit();
+        vlc.OcxState = (AxHost.State)resources.GetObject("axVLCPlugin21.OcxState");
+        ((System.ComponentModel.ISupportInitialize)vlc).EndInit();
 
         return vlc;
     }
@@ -226,6 +239,7 @@ public class VideoComponent : ControlComponent
                         }
                     });
                 }
+
                 OldMRL = Settings.MRL;
 
                 if (VLC != null)
@@ -251,7 +265,9 @@ public class VideoComponent : ControlComponent
         State.OnPause -= state_OnPause;
         State.OnResume -= state_OnResume;
         if (SynchronizeTimer != null)
+        {
             SynchronizeTimer.Dispose();
+        }
     }
 
     public int GetSettingsHashCode()
