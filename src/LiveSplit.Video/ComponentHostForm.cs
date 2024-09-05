@@ -1,12 +1,11 @@
 ﻿using System.Windows.Forms;
 
-namespace LiveSplit.Video
+namespace LiveSplit.Video;
+
+public partial class ComponentHostForm : Form
 {
-    public partial class ComponentHostForm : Form
+    public ComponentHostForm()
     {
-        public ComponentHostForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
