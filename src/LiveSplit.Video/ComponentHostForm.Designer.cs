@@ -42,13 +42,13 @@
             this.axVLCPlugin21.Size = new System.Drawing.Size(320, 240);
             this.axVLCPlugin21.TabIndex = 0;
             // 
-            // Form1
+            // ComponentHostForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Controls.Add(this.axVLCPlugin21);
-            this.Name = "Form1";
+            this.Name = "ComponentHostForm";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.axVLCPlugin21)).EndInit();
             this.ResumeLayout(false);
