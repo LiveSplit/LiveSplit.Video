@@ -28,7 +28,9 @@ public partial class VideoSettings : UserControl
         get => TimeFormatter.Format(Offset);
         set
         {
-            if (Regex.IsMatch(value, "[^0-9:.,-]"))
+            // The ordering here is significant. If the DASH isn't last the expression attempts to match on a range.
+            string negative_pattern = "[^0-9:.," + TimeFormatConstants.MINUS + TimeFormatConstants.DASH + "]";
+            if (Regex.IsMatch(value, negative_pattern))
             {
                 return;
             }
