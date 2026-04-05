@@ -5,6 +5,7 @@ using System.Web;
 using System.Windows.Forms;
 using System.Xml;
 
+using LiveSplit.Localization;
 using LiveSplit.Model;
 using LiveSplit.Options;
 using LiveSplit.TimeFormatters;
@@ -14,6 +15,8 @@ namespace LiveSplit.Video;
 
 public partial class VideoSettings : UserControl
 {
+    private static string T(string source) => UiLocalizer.Translate(source, LanguageResolver.ResolveCurrentCultureLanguage());
+
     public string MRL => HttpUtility.UrlPathEncode("file:///" + VideoPath.Replace('\\', '/').Replace("%", "%25"));
     public string VideoPath { get; set; }
     public TimeSpan Offset { get; set; }
@@ -93,7 +96,7 @@ public partial class VideoSettings : UserControl
     {
         var dialog = new OpenFileDialog()
         {
-            Filter = "Video Files|*.avi;*.mpeg;*.mpg;*.mp4;*.mov;*.wmv;*.m4v;*.flv;*.mkv;*.ogg|All Files (*.*)|*.*"
+            Filter = T("Video Files|*.avi;*.mpeg;*.mpg;*.mp4;*.mov;*.wmv;*.m4v;*.flv;*.mkv;*.ogg|All Files (*.*)|*.*")
         };
         if (File.Exists(VideoPath))
         {
@@ -116,7 +119,7 @@ public partial class VideoSettings : UserControl
             trkHeightWidth.Minimum = 100;
             trkHeightWidth.Maximum = 400;
             trkHeightWidth.DataBindings.Add("Value", this, "Width", false, DataSourceUpdateMode.OnPropertyChanged);
-            lblHeightWidth.Text = "Width:";
+            lblHeightWidth.Text = T("Width:");
         }
         else
         {
@@ -124,7 +127,7 @@ public partial class VideoSettings : UserControl
             trkHeightWidth.Minimum = 100;
             trkHeightWidth.Maximum = 300;
             trkHeightWidth.DataBindings.Add("Value", this, "Height", false, DataSourceUpdateMode.OnPropertyChanged);
-            lblHeightWidth.Text = "Height:";
+            lblHeightWidth.Text = T("Height:");
         }
     }
 }
