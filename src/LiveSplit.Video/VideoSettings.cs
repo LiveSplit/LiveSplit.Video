@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Windows.Forms;
@@ -108,6 +109,25 @@ public partial class VideoSettings : UserControl
         if (result == DialogResult.OK)
         {
             VideoPath = txtVideoPath.Text = dialog.FileName;
+        }
+    }
+
+    private void txtVideoPath_DragDrop(object sender, DragEventArgs e)
+    {
+        string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+        txtVideoPath.Text = paths.FirstOrDefault();
+        VideoPath = paths.FirstOrDefault();
+    }
+
+    private void txtVideoPath_DragEnter(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+        else
+        {
+            e.Effect = DragDropEffects.None;
         }
     }
 

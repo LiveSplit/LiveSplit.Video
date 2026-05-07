@@ -87,11 +87,14 @@
             // 
             // txtVideoPath
             // 
+            this.txtVideoPath.AllowDrop = true;
             this.txtVideoPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtVideoPath.Location = new System.Drawing.Point(85, 4);
             this.txtVideoPath.Name = "txtVideoPath";
             this.txtVideoPath.Size = new System.Drawing.Size(293, 20);
             this.txtVideoPath.TabIndex = 0;
+            this.txtVideoPath.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtVideoPath_DragDrop);
+            this.txtVideoPath.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtVideoPath_DragEnter);
             // 
             // label2
             // 
