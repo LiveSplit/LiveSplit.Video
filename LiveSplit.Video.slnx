@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/LiveSplit.Video/LiveSplit.Video.csproj" />
+  </Folder>
+</Solution>
