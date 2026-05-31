@@ -1,12 +1,11 @@
-﻿using System;
+﻿using AxAXVLC;
+using LiveSplit.Model;
+using LiveSplit.UI.Components;
+using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
-
-using AxAXVLC;
-
-using LiveSplit.Model;
-using LiveSplit.UI.Components;
 
 namespace LiveSplit.Video;
 
@@ -106,7 +105,7 @@ public class VideoComponent : ControlComponent
 
     public void Synchronize(TimeSpan offset)
     {
-        if (SynchronizeTimer != null && SynchronizeTimer.Enabled)
+        if (SynchronizeTimer is { Enabled: true })
         {
             SynchronizeTimer.Enabled = false;
         }
@@ -168,12 +167,12 @@ public class VideoComponent : ControlComponent
     private static AxVLCPlugin2 CreateVLCControl()
     {
         var vlc = new AxVLCPlugin2();
-        var resources = new System.ComponentModel.ComponentResourceManager(typeof(ComponentHostForm));
-        ((System.ComponentModel.ISupportInitialize)vlc).BeginInit();
+        var resources = new ComponentResourceManager(typeof(ComponentHostForm));
+        ((ISupportInitialize)vlc).BeginInit();
         vlc.Enabled = true;
         vlc.Name = "vlc";
         vlc.OcxState = (AxHost.State)resources.GetObject("axVLCPlugin21.OcxState");
-        ((System.ComponentModel.ISupportInitialize)vlc).EndInit();
+        ((ISupportInitialize)vlc).EndInit();
 
         return vlc;
     }
