@@ -9,20 +9,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(LsSrcPath)\LiveSplit.Core\LiveSplit.Core.csproj" Private="false" ExcludeAssets="runtime" />
-    <ProjectReference Include="$(LsSrcPath)\UpdateManager\UpdateManager.csproj" Private="false" ExcludeAssets="runtime" />
+    <ProjectReference Include="$(LsSrcPath)/LiveSplit.Core/LiveSplit.Core.csproj" Private="false" ExcludeAssets="runtime" />
+    <ProjectReference Include="$(LsSrcPath)/UpdateManager/UpdateManager.csproj" Private="false" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="all" />
-    <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+    <PackageReference Include="PolySharp" Version="1.16.0" PrivateAssets="all" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="System.Web" />
 
-    <Reference Include="$(LsLibPath)\VLC\AxInterop.AXVLC.dll" />
-    <Reference Include="$(LsLibPath)\VLC\Interop.AXVLC.dll" />
+    <Reference Include="$(LsLibPath)/VLC/AxInterop.AXVLC.dll" />
+    <Reference Include="$(LsLibPath)/VLC/Interop.AXVLC.dll" />
   </ItemGroup>
 
 </Project>
